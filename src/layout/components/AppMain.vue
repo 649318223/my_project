@@ -1,19 +1,22 @@
 <template>
   <div class="app-main">
-    <router-view></router-view>
+    <el-card class="app-main-content" shadow="hover">
+      <router-view></router-view>
+    </el-card>
   </div>
 </template>
 
-<script lang="ts" setup>
-
-</script>
+<script lang="ts" setup></script>
 
 <style lang="scss" scoped>
-.app-main{
+.app-main {
   flex: 1;
   height: 100%;
-  padding: 20px;
+  padding: 16px;
   box-sizing: border-box;
-  background-color: antiquewhite;
+  background-color: #f8f8f8;
+  &-content {
+    height: 100%;
+  }
 }
 </style>

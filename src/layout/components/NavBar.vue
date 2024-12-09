@@ -1,16 +1,47 @@
 <template>
-  <div class="navbar">
-    <span>NavBar</span>
-  </div>
+  <el-header class="header">
+    <div class="header-left">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <a href="/">菜单</a>
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>菜单</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="header-right">
+      <el-dropdown>
+        <span class="el-dropdown-link">
+          Dropdown List
+          <!-- <el-icon class="el-icon--right"><arrow-down /></el-icon> -->
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item :icon="Plus">Action 1</el-dropdown-item>
+            <el-dropdown-item :icon="CirclePlusFilled"> Action 2 </el-dropdown-item>
+            <el-dropdown-item :icon="CirclePlus">Action 3</el-dropdown-item>
+            <el-dropdown-item :icon="Check">Action 4</el-dropdown-item>
+            <el-dropdown-item :icon="CircleCheck">Action 5</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+  </el-header>
 </template>
 
 <script lang="ts" setup>
-
+import { ArrowDown, Check, CircleCheck, CirclePlus, CirclePlusFilled, Plus } from "@element-plus/icons-vue";
 </script>
 
 <style lang="scss" scoped>
-.navbar {
-  height: 50px;
-  background: gainsboro;
+.header {
+  position: relative;
+  border-bottom: 1px solid #DCDFE6;
+  .el-dropdown-link {
+    outline: unset;
+  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
