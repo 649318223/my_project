@@ -1,0 +1,66 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	outline: none !important;
+}
+
+:root {
+	--mz-color-white: #ffffff;
+	--mz-bg-main-color: #f8f8f8;
+	--mz-bg-color: #f5f5ff;
+	--mz-border-color-light: #f1f2f3;
+	--mz-color-primary-lighter: #ecf5ff;
+	--mz-color-success-lighter: #f0f9eb;
+	--mz-color-warning-lighter: #fdf6ec;
+	--mz-color-danger-lighter: #fef0f0;
+	--mz-color-dark-hover: #0000001a;
+	--mz-color-menu-hover: rgba(0, 0, 0, 0.2);
+	--mz-color-user-hover: rgba(0, 0, 0, 0.04);
+	--mz-color-seting-main: #e9eef3;
+	--mz-color-seting-aside: #d3dce6;
+	--mz-color-seting-header: #b3c0d1;
+}
+
+html,
+body,
+#app {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+	font-weight: 400;
+	-webkit-font-smoothing: antialiased;
+	-webkit-tap-highlight-color: transparent;
+	background-color: var(--next-bg-main-color);
+	font-size: 14px;
+	overflow: hidden;
+	position: relative;
+}
+
+// 主体内容样式
+.app-main {
+  flex: 1;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: var(--mz-bg-main-color);
+  &-content {
+    height: 100%;
+    --el-card-border-color: var(--el-border-color-light);
+    --el-card-border-radius: 4px;
+    --el-card-padding: 20px;
+    --el-card-bg-color: var(--el-fill-color-blank);
+    background-color: var(--el-card-bg-color);
+    border: 1px solid var(--el-card-border-color);
+    border-radius: var(--el-card-border-radius);
+    color: var(--el-text-color-primary);
+    overflow: hidden;
+    transition: var(--el-transition-duration);
+    padding: var(--el-card-padding);
+    &:hover {
+      box-shadow: var(--el-box-shadow-light);
+    }
+  }
+}

@@ -1,9 +1,10 @@
 <template>
   <div class="sidebar">
     <el-scrollbar>
-      <el-menu router default-active="/home" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-        <template v-for="item in menuList">
-          <el-sub-menu :index="item.path" v-if="item.children && item.children.length > 0" :key="item.path">
+      <!-- @open="handleOpen" @close="handleClose" -->
+      <el-menu :collapse="state.isCollapse" router :default-active="state.defaultActive" class="el-menu-vertical-demo">
+        <template v-for="(item, index) in menuList">
+          <el-sub-menu :index="item.path+''" v-if="item.children && item.children.length > 0" :key="item.path">
             <template #title>
               <el-icon><icon-menu /></el-icon>
               <span>{{ item?.meta?.title }}</span>
@@ -26,14 +27,28 @@
 
 <script lang="ts" setup>
 import { Document, Menu as IconMenu, Location, Setting } from "@element-plus/icons-vue";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { computed, reactive,onMounted } from "vue";
+import { useRouter,useRoute,onBeforeRouteUpdate } from "vue-router";
 const router = useRouter();
+const route = useRoute();
+// 变量
+const state = reactive({
+  defaultActive: "/home",
+  isCollapse: false,
+});
 
 //计算属性
 const menuList = computed(() => {
   const routerList = router.options.routes.filter((item) => !item?.meta?.isHide)[0].children;
   return routerList;
+});
+// 页面加载时
+onMounted(() => {
+	state.defaultActive = route.path;
+});
+// 路由更新时
+onBeforeRouteUpdate(to => {
+	state.defaultActive = to.path
 });
 //方法
 const handleOpen = (key: string, keyPath: string[]) => {
