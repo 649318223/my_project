@@ -36,7 +36,7 @@ import { ArrowDown, Check, CircleCheck, CirclePlus, CirclePlusFilled, Plus } fro
 <style lang="scss" scoped>
 .header {
   position: relative;
-  border-bottom: 1px solid #DCDFE6;
+  border-bottom: 1px solid var(--mz-border-color-light);
   .el-dropdown-link {
     outline: unset;
   }
