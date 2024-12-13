@@ -2,28 +2,39 @@
   <div class="tags-view">
     <el-scrollbar>
       <div class="scrollbar-flex-content">
-        <div v-for="item in state.tagsViewList" :key="item.path" :class="{ 'scrollbar-content-item': true, active: tagsActive === item.path }">
-          {{ item?.meta?.title }}
+        <div
+          v-for="item in state.tagsViewList"
+          @contextmenu.prevent="onContextmenu(item, $event)"
+          @click="tagsClick(item.path)"
+          :key="item.path"
+          :class="{ 'scrollbar-content-item': true, active: tagsActive === item.path }"
+        >
+          <span class="title">{{ item?.meta?.title }}</span>
           <el-icon class="close" @click="closeTag(item.path)"><Close /></el-icon>
         </div>
       </div>
     </el-scrollbar>
+    <Contextmenu :dropdown="state.dropdown" ref="contextmenuRef" @currentContextmenuClick="onCurrentContextmenuClick" />
   </div>
 </template>
 
 <script lang="ts" setup>
 interface state {
   tagsViewList: any[];
+  dropdown: any;
 }
+
 import { Close } from "@element-plus/icons-vue";
-import { watch, reactive, computed } from "vue";
+import { watch, reactive, computed, defineAsyncComponent, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
-
+const Contextmenu = defineAsyncComponent(() => import("./contextmenu.vue"));
+const contextmenuRef = ref();
 //data
 const state = reactive<state>({
   tagsViewList: [],
+  dropdown: { x: "", y: "" },
 });
 
 //computed
@@ -46,6 +57,18 @@ watch(
 );
 
 //methods
+const onContextmenu = (item: any, e: MouseEvent) => {
+  const { clientX, clientY } = e;
+  console.log(item, e);
+  state.dropdown.x = clientX;
+  state.dropdown.y = clientY;
+  console.log(contextmenuRef)
+  contextmenuRef.value.openContextmenu(e);
+};
+// 当前项右键菜单点击
+const onCurrentContextmenuClick = async (item: any) => {
+  console.log(item);
+};
 //初始化数据
 const initData = () => {
   const defauleRouteList = ["/home"];
@@ -53,6 +76,12 @@ const initData = () => {
   const defauleRoute = defauleTag(routerList, defauleRouteList);
   if (defauleRoute) {
     state.tagsViewList.push(defauleRoute);
+  }
+  if (tagsActive.value && tagsActive.value !== "/home") {
+    const currentRouter = defauleTag(routerList, [tagsActive.value]);
+    if (currentRouter) {
+      state.tagsViewList.push(currentRouter);
+    }
   }
 };
 //递归查找默认路由
@@ -69,9 +98,12 @@ const defauleTag = (arr: readonly any[], defauleRouteList: Array<any>) => {
       }
     }
   };
-
   findRoute(arr);
   return obj;
+};
+//点击标签
+const tagsClick = (path: string) => {
+  router.push(path);
 };
 //关闭标签
 const closeTag = (path: string) => {
@@ -93,6 +125,12 @@ initData();
   padding: 0 16px;
   border-bottom: 1px solid var(--mz-border-color-light);
   padding-top: 5px;
+  .active {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+  }
   .scrollbar-content-item {
     flex-shrink: 0;
     display: flex;
@@ -101,6 +139,7 @@ initData();
     height: 30px;
     padding: 0 16px;
     text-align: center;
+    cursor: pointer;
     .close {
       margin-left: 4px;
       cursor: pointer;
@@ -110,12 +149,10 @@ initData();
         border-radius: 50%;
       }
     }
-  }
-  .active {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    background: var(--el-color-primary-light-9);
-    color: var(--el-color-primary);
+    &:hover {
+      @extend .active;
+      color: #000;
+    }
   }
 }
 </style>
