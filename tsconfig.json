@@ -11,15 +11,16 @@
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "types": [
       "webpack-env"
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
+    "typeRoots": ["./node_modules/@types"],
     "lib": [
       "esnext",
       "dom",

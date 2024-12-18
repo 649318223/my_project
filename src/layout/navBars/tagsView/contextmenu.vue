@@ -53,15 +53,9 @@ const state = reactive({
 	isShow: false,
 	dropdownList: [
 		{ contextMenuClickId: 0, txt: '刷新', affix: false, icon: 'ele-RefreshRight' },
-		{ contextMenuClickId: 1, txt: 'message.tagsView.close', affix: false, icon: 'ele-Close' },
-		{ contextMenuClickId: 2, txt: 'message.tagsView.closeOther', affix: false, icon: 'ele-CircleClose' },
-		{ contextMenuClickId: 3, txt: 'message.tagsView.closeAll', affix: false, icon: 'ele-FolderDelete' },
-		{
-			contextMenuClickId: 4,
-			txt: 'message.tagsView.fullscreen',
-			affix: false,
-			icon: 'iconfont icon-fullscreen',
-		},
+		{ contextMenuClickId: 1, txt: '关闭', affix: false, icon: 'ele-Close' },
+		{ contextMenuClickId: 2, txt: '关闭其他', affix: false, icon: 'ele-CircleClose' },
+		{ contextMenuClickId: 3, txt: '关闭所有', affix: false, icon: 'ele-FolderDelete' },
 	],
 	item: {},
 	arrowLeft: 10,
@@ -81,7 +75,7 @@ const dropdowns = computed(() => {
 });
 // 当前项菜单点击
 const onCurrentContextmenuClick = (contextMenuClickId: number) => {
-	emit('currentContextmenuClick', Object.assign({}, { contextMenuClickId }, state.item));
+	emit('currentContextmenuClick', Object.assign({}, { contextMenuClickId }, { router : state.item }));
 };
 // 打开右键菜单：判断是否固定，固定则不显示关闭按钮
 const openContextmenu = (item: any) => {

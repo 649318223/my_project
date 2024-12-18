@@ -10,7 +10,7 @@
           :class="{ 'scrollbar-content-item': true, active: tagsActive === item.path }"
         >
           <span class="title">{{ item?.meta?.title }}</span>
-          <el-icon class="close" @click="closeTag(item.path)"><Close /></el-icon>
+          <el-icon v-if="!item.meta?.isAffix" class="close" @click="closeTag(item.path)"><Close /></el-icon>
         </div>
       </div>
     </el-scrollbar>
@@ -24,6 +24,10 @@ interface state {
   dropdown: any;
 }
 
+import { useTagsViewStore } from '@/store/index.js'
+const tagsViewStore = useTagsViewStore()
+console.log(tagsViewStore)
+import mittBus from "@/utils/mitt";
 import { Close } from "@element-plus/icons-vue";
 import { watch, reactive, computed, defineAsyncComponent, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -31,6 +35,7 @@ const route = useRoute();
 const router = useRouter();
 const Contextmenu = defineAsyncComponent(() => import("./contextmenu.vue"));
 const contextmenuRef = ref();
+
 //data
 const state = reactive<state>({
   tagsViewList: [],
@@ -57,17 +62,30 @@ watch(
 );
 
 //methods
+//标签点击
 const onContextmenu = (item: any, e: MouseEvent) => {
   const { clientX, clientY } = e;
-  console.log(item, e);
   state.dropdown.x = clientX;
   state.dropdown.y = clientY;
-  console.log(contextmenuRef)
-  contextmenuRef.value.openContextmenu(e);
+  contextmenuRef.value.openContextmenu(item);
 };
 // 当前项右键菜单点击
 const onCurrentContextmenuClick = async (item: any) => {
-  console.log(item);
+  switch (item.contextMenuClickId) {
+    //刷新
+    case 0:
+      refreshTag(item.router);
+      break;
+    case 1:
+      closeTag(item.router.path);
+      break;
+    case 2:
+      closeOtherTag(item.router.path);
+      break;
+    case 3:
+      closeAllTag();
+      break;
+  }
 };
 //初始化数据
 const initData = () => {
@@ -114,6 +132,24 @@ const closeTag = (path: string) => {
   const index = tagsViewList.findIndex((item) => item.path === path);
   tagsViewList.splice(index, 1);
   router.push(tagsViewList[index - 1].path);
+};
+//刷新标签
+const refreshTag = (currentRouter: any) => {
+  router.push(currentRouter.path);
+  if (route.path === currentRouter.path) {
+    mittBus.emit("reload");
+  }
+};
+//关闭其他标签
+const closeOtherTag = (path: string) => {
+  const newList = state.tagsViewList.filter((item) => item.path === path || item.meta?.isAffix);
+  state.tagsViewList = newList;
+};
+//关闭所有标签
+const closeAllTag = () => {
+  const newList = state.tagsViewList.filter((item) => item.meta?.isAffix);
+  state.tagsViewList = newList;
+  router.push(state.tagsViewList[0].path);
 };
 //初始化赋默认值
 initData();
