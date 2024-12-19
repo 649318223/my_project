@@ -10,7 +10,7 @@
           :class="{ 'scrollbar-content-item': true, active: tagsActive === item.path }"
         >
           <span class="title">{{ item?.meta?.title }}</span>
-          <el-icon v-if="!item.meta?.isAffix" class="close" @click="closeTag(item.path)"><Close /></el-icon>
+          <el-icon v-if="!item.meta?.isAffix" class="close" @click.stop="closeTag(item.path)"><Close /></el-icon>
         </div>
       </div>
     </el-scrollbar>
@@ -24,12 +24,11 @@ interface state {
   dropdown: any;
 }
 
-import { useTagsViewStore } from '@/store/index.js'
-const tagsViewStore = useTagsViewStore()
-console.log(tagsViewStore)
+import { useTagsViewStore } from "@/store/index.js";
+const tagsViewStore = useTagsViewStore();
 import mittBus from "@/utils/mitt";
 import { Close } from "@element-plus/icons-vue";
-import { watch, reactive, computed, defineAsyncComponent, ref } from "vue";
+import { watch, reactive, computed, defineAsyncComponent, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
@@ -60,6 +59,13 @@ watch(
   },
   { deep: true, immediate: true }
 );
+watchEffect(
+  () => {
+    const tagsViewList = state.tagsViewList;
+    tagsViewStore.setTagsViewList(tagsViewList);
+  },
+  { flush: "post" }
+);
 
 //methods
 //标签点击
@@ -89,18 +95,25 @@ const onCurrentContextmenuClick = async (item: any) => {
 };
 //初始化数据
 const initData = () => {
+  //获取本地存储的tagsViewList
+  const localTagsViewList = tagsViewStore.tagsViewList;
+  if (localTagsViewList.length) {
+    state.tagsViewList = localTagsViewList;
+    return;
+  }
+  //获取默认路由
   const defauleRouteList = ["/home"];
   const routerList = router.options.routes;
   const defauleRoute = defauleTag(routerList, defauleRouteList);
   if (defauleRoute) {
     state.tagsViewList.push(defauleRoute);
   }
-  if (tagsActive.value && tagsActive.value !== "/home") {
-    const currentRouter = defauleTag(routerList, [tagsActive.value]);
-    if (currentRouter) {
-      state.tagsViewList.push(currentRouter);
-    }
-  }
+  // if (tagsActive.value && tagsActive.value !== "/home") {
+  //   const currentRouter = defauleTag(routerList, [tagsActive.value]);
+  //   if (currentRouter) {
+  //     state.tagsViewList.push(currentRouter);
+  //   }
+  // }
 };
 //递归查找默认路由
 const defauleTag = (arr: readonly any[], defauleRouteList: Array<any>) => {

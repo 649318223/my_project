@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { reactive,ref } from "vue";
 
 //定义store
 // defineStore(仓库唯一标识,()=>{...})
@@ -7,10 +7,11 @@ export const useTagsViewStore = defineStore(
   "tagsView",
   () => {
     //定义数据
-    let tagsViewList: any[] = reactive([]);
+    // const
+    let tagsViewList = ref(<any[any]>[]);
     //定义方法
-    const setTagsViewList = (arr: [any]) => {
-      tagsViewList = arr;
+    const setTagsViewList = (arr: any[any]) => {
+      tagsViewList.value = arr;
     };
     //返回数据
     return { tagsViewList, setTagsViewList };
@@ -18,9 +19,5 @@ export const useTagsViewStore = defineStore(
   {
     //是否开启数据持久化
     persist:true,
-    // persist: {
-    //   key: "user", //存储的key
-    //   storage: localStorage, //存储的仓库
-    // },
   }
 );
