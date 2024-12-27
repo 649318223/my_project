@@ -63,6 +63,11 @@ watchEffect(
   () => {
     const tagsViewList = state.tagsViewList;
     tagsViewStore.setTagsViewList(tagsViewList);
+    //获取本地存储的tagsViewList
+    const localTagsViewList = tagsViewStore.tagsViewList;
+    if (localTagsViewList.length) {
+      state.tagsViewList = localTagsViewList;
+    }
   },
   { flush: "post" }
 );
@@ -95,12 +100,6 @@ const onCurrentContextmenuClick = async (item: any) => {
 };
 //初始化数据
 const initData = () => {
-  //获取本地存储的tagsViewList
-  const localTagsViewList = tagsViewStore.tagsViewList;
-  if (localTagsViewList.length) {
-    state.tagsViewList = localTagsViewList;
-    return;
-  }
   //获取默认路由
   const defauleRouteList = ["/home"];
   const routerList = router.options.routes;
@@ -108,12 +107,12 @@ const initData = () => {
   if (defauleRoute) {
     state.tagsViewList.push(defauleRoute);
   }
-  // if (tagsActive.value && tagsActive.value !== "/home") {
-  //   const currentRouter = defauleTag(routerList, [tagsActive.value]);
-  //   if (currentRouter) {
-  //     state.tagsViewList.push(currentRouter);
-  //   }
-  // }
+  if (tagsActive.value && tagsActive.value !== "/home") {
+    const currentRouter = defauleTag(routerList, [tagsActive.value]);
+    if (currentRouter) {
+      state.tagsViewList.push(currentRouter);
+    }
+  }
 };
 //递归查找默认路由
 const defauleTag = (arr: readonly any[], defauleRouteList: Array<any>) => {
